@@ -25,6 +25,15 @@ class PlayState extends FlxState
 		super.create();
 
 		project = new LdtkProject();
+#if FLX_DEBUG
+#if !js
+		// Force a reload of the ldtk JSON for faster iteration when debugging
+		// Only works on non-js targets (hashlink, mostly).
+		project.parseJson(sys.io.File.getContent("../../../assets/data/myProject.ldtk"));
+		// This method of file lookup might be a bit fragile, but we have to work our way backward
+		// from the built code hanging out under export/ which takes a bit of traversal.
+#end
+#end
 
 		levelsCollision = new Map<Int, FlxTilemap>();
 
@@ -130,7 +139,7 @@ class PlayState extends FlxState
 		return new Player(
 			playerEntity.pixelX, 
 			playerEntity.pixelY, 
-			// Colors need alpha channel info added, same as background loading.
+			// Colors need alpha channel info added, same idea as background loading.
 			0xFF000000 + playerEntity.f_Color_int,
 			playerEntity.f_Player_Id
 			);
@@ -155,7 +164,6 @@ class PlayState extends FlxState
 	private function reloadLevel() {
 		FlxG.resetState();
 	}
-
 #end
 
 	////////////////
